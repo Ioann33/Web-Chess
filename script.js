@@ -22,7 +22,7 @@ function showAllFigures(figures) {
 }
 function showFigure(cord, figure) {
     let square = document.getElementById('s'+cord)
-    square.innerHTML = `<div id="f${cord}" class="figure" ondragstart="setDraggable(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
+    square.innerHTML = `<div id="f${cord}" class="figure" onmousedown="setDraggable(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
 }
 
 function isBlackSquare(cord) {
@@ -56,18 +56,37 @@ function setDraggable(id) {
     //     figure.style.left = event.clientX+'px';
     //     figure.style.right = event.clientY+'px';
     // }
+    // figure.onmousedown = function (event){
+    //     console.log('dragstart')
+    //     offsetX = event.offsetX
+    //     offsetY = event.offsetY
+    //     figure.style.position = 'absolute';
+    // }
 
+    // figure.addEventListener('drag', function (event) {
+    //     figure.style.backgroundColor = 'rgba(255,255,255,0)'
+    // })
     figure.addEventListener('dragstart', function (event) {
+        console.log('dragstart')
         offsetX = event.offsetX
         offsetY = event.offsetY
+        figure.style.position = 'absolute'
+        setTimeout(function (){
+            figure.style.visibility = 'hidden'
+        },0)
+
     })
     figure.addEventListener('dragend', function (el) {
+        console.log('dragend')
         console.log(el.pageX, el.pageY)
-        figure.style.top = (el.pageY-offsetY) + 'px';
-        figure.style.left = (el.pageX-offsetX) + 'px';
+        figure.style.top = (el.pageY-offsetY) + 'px'
+        figure.style.left = (el.pageX-offsetX) + 'px'
+        figure.style.visibility = 'visible'
     })
 
 }
+
+
 
 
 

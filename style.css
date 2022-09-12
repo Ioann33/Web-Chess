@@ -20,7 +20,11 @@
     background-color: #eee;
 }
 .figure{
-    position: absolute;
+    /*position: absolute;*/
     font-size: 60px;
     cursor: pointer;
+}
+
+.hide{
+    display: none;
 }
