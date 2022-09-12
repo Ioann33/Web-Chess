@@ -5,7 +5,7 @@ function showBoard() {
     board.innerText = '';
     for (let cord = 0; cord <64; cord++) {
         // console.log(cord%8+' and '+Math.floor(cord/8)+' and '+cord%8 + Math.floor(cord/8))
-        color = isBlackSquare(cord)? 'black' : 'white';
+        color = computedColorSquare(cord)? 'black' : 'white';
         board.insertAdjacentHTML('beforeend', `
          <div id="s${cord}" class="square ${color}"></div>
         `);
@@ -22,10 +22,10 @@ function showAllFigures(figures) {
 }
 function showFigure(cord, figure) {
     let square = document.getElementById('s'+cord)
-    square.innerHTML = `<div id="f${cord}" class="figure" onmousedown="setDraggable(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
+    square.innerHTML = `<div id="f${cord}" class="figure" onmousedown="dragAndDrop(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
 }
 
-function isBlackSquare(cord) {
+function computedColorSquare(cord) {
     return (cord%8 + Math.floor(cord/8))%2 ;
 }
 
@@ -47,26 +47,18 @@ function getChessSymbol(figure) {
     }
 }
 
-function setDraggable(id) {
+function dragAndDrop(id) {
     let figure = document.getElementById('f'+id)
     console.log(figure)
     let offsetX;
     let offsetY;
+    let start;
     // figure.ondragend = function (event){
     //     figure.style.left = event.clientX+'px';
     //     figure.style.right = event.clientY+'px';
     // }
-    // figure.onmousedown = function (event){
-    //     console.log('dragstart')
-    //     offsetX = event.offsetX
-    //     offsetY = event.offsetY
-    //     figure.style.position = 'absolute';
-    // }
-
-    // figure.addEventListener('drag', function (event) {
-    //     figure.style.backgroundColor = 'rgba(255,255,255,0)'
-    // })
     figure.addEventListener('dragstart', function (event) {
+        start = figure.parentNode.id.substring(1)
         console.log('dragstart')
         offsetX = event.offsetX
         offsetY = event.offsetY
@@ -76,18 +68,23 @@ function setDraggable(id) {
         },0)
 
     })
-    figure.addEventListener('dragend', function (el) {
+    figure.addEventListener('dragend', function (event) {
         console.log('dragend')
-        console.log(el.pageX, el.pageY)
-        figure.style.top = (el.pageY-offsetY) + 'px'
-        figure.style.left = (el.pageX-offsetX) + 'px'
+        // console.log(el.pageX, el.pageY)
+        figure.style.top = (event.pageY-offsetY) + 'px'
+        figure.style.left = (event.pageX-offsetX) + 'px'
         figure.style.visibility = 'visible'
     })
 
+    let squares = document.querySelectorAll('.square')
+    squares.forEach(function (square) {
+        square.addEventListener('drop', function (event) {
+            console.log('from '+start+' to '+square.id.substring(1))
+            square.append(figure)
+        })
+    })
+
 }
-
-
-
 
 
 
