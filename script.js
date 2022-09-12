@@ -99,7 +99,6 @@ function dragAndDrop(id) {
 
     let squares = document.querySelectorAll('.square')
     squares.forEach(function (square) {
-        console.log('square')
         square.ondrop = function (){
             // console.log('from '+start+' to '+square.id.substring(1))
             moveFigure(start, square.id.substring(1))
