@@ -1,3 +1,5 @@
+let map = new Array(64)
+
 function showBoard() {
     let color = '';
     let board = document.querySelector('.board');
@@ -21,8 +23,9 @@ function showAllFigures(figures) {
     }
 }
 function showFigure(cord, figure) {
+    map[cord] = figure
     let square = document.getElementById('s'+cord)
-    square.innerHTML = `<div id="f${cord}" class="figure" onmousedown="dragAndDrop(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
+    square.innerHTML = `<div id="f${cord}" class="figure"  onmousedown="dragAndDrop(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
 }
 
 function computedColorSquare(cord) {
@@ -47,9 +50,17 @@ function getChessSymbol(figure) {
     }
 }
 
+function moveFigure(from, to){
+    console.log('move from '+from+' to '+to)
+    let figure = map[from]
+    showFigure(from, '1')
+    showFigure(to, figure)
+
+}
+
 function dragAndDrop(id) {
     let figure = document.getElementById('f'+id)
-    console.log(figure)
+    // console.log(figure)
     let offsetX;
     let offsetY;
     let start;
@@ -58,6 +69,7 @@ function dragAndDrop(id) {
     //     figure.style.right = event.clientY+'px';
     // }
     figure.addEventListener('dragstart', function (event) {
+        // console.log(figure.parentNode)
         start = figure.parentNode.id.substring(1)
         console.log('dragstart')
         offsetX = event.offsetX
@@ -74,17 +86,31 @@ function dragAndDrop(id) {
         figure.style.top = (event.pageY-offsetY) + 'px'
         figure.style.left = (event.pageX-offsetX) + 'px'
         figure.style.visibility = 'visible'
+        console.log(map)
     })
+
+    // let squares = document.querySelectorAll('.square')
+    // squares.forEach(function (square) {
+    //     square.addEventListener('drop', function (event) {
+    //         console.log('from '+start+' to '+square.id.substring(1))
+    //         square.append(figure)
+    //     })
+    // })
 
     let squares = document.querySelectorAll('.square')
     squares.forEach(function (square) {
-        square.addEventListener('drop', function (event) {
-            console.log('from '+start+' to '+square.id.substring(1))
-            square.append(figure)
-        })
+        console.log('square')
+        square.ondrop = function (){
+            // console.log('from '+start+' to '+square.id.substring(1))
+            moveFigure(start, square.id.substring(1))
+        }
+
     })
 
+
 }
+
+
 
 
 
