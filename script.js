@@ -1,5 +1,5 @@
 let map = new Array(64)
-
+let isDragging = false;
 function showBoard() {
     let color = '';
     let board = document.querySelector('.board');
@@ -23,6 +23,9 @@ function showAllFigures(figures) {
     }
 }
 function showFigure(cord, figure) {
+    if (map[cord] === figure){
+        return
+    }
     map[cord] = figure
     let square = document.getElementById('s'+cord)
     square.innerHTML = `<div id="f${cord}" class="figure"  onmousedown="dragAndDrop(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
@@ -69,6 +72,7 @@ function dragAndDrop(id) {
     //     figure.style.right = event.clientY+'px';
     // }
     figure.addEventListener('dragstart', function (event) {
+        isDragging = true
         // console.log(figure.parentNode)
         start = figure.parentNode.id.substring(1)
         console.log('dragstart')
@@ -82,6 +86,7 @@ function dragAndDrop(id) {
     })
     figure.addEventListener('dragend', function (event) {
         console.log('dragend')
+        isDragging = false
         // console.log(el.pageX, el.pageY)
         figure.style.top = (event.pageY-offsetY) + 'px'
         figure.style.left = (event.pageX-offsetX) + 'px'
@@ -101,7 +106,8 @@ function dragAndDrop(id) {
     squares.forEach(function (square) {
         square.ondrop = function (){
             // console.log('from '+start+' to '+square.id.substring(1))
-            moveFigure(start, square.id.substring(1))
+            moveFigurePHP(start, square.id.substring(1))
+            // moveFigure(start, square.id.substring(1))
         }
 
     })
@@ -109,10 +115,29 @@ function dragAndDrop(id) {
 
 }
 
+function getBoardMap(){
+    if (isDragging){
+        return
+    }
+    console.log('showphp')
+    fetch('chess.php?getFigures')
+        .then(res => res.text())
+        .then(res => {
+            showAllFigures(res)
+        })
+}
 
+function moveFigurePHP(from, to){
+    console.log('attempt 200')
+    fetch(`chess.php?moveFigure&from=${from}&to=${to}`)
+        .then(res => res.text())
+        .then(res => {
+            showAllFigures(res)
+        })
+}
 
-
-
-
+getBoardMap()
+setInterval(getBoardMap, 3000)
 showBoard();
-showAllFigures('rnbqkbnrpppppppp11111111111111111111111111111111PPPPPPPPRNBQKBNR')
+// showAllFigures('rnbqkbnrppppppp11111111111111111111111111111111PPPPPPPPRNBQKBNR')
+
