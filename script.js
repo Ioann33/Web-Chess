@@ -1,5 +1,6 @@
 let map = new Array(64)
 let isDragging = false;
+
 function showBoard() {
     let color = '';
     let board = document.querySelector('.board');
@@ -14,19 +15,25 @@ function showBoard() {
 
     }
 }
+
 function allowDrop(event) {
     event.preventDefault()
 }
 function showAllFigures(figures) {
     for (let cord =0; cord < 64; cord++){
+        console.log('rewrite 1')
         showFigure(cord, figures[cord])
     }
 }
 function showFigure(cord, figure) {
+
     if (map[cord] === figure){
         return
     }
+
     map[cord] = figure
+    console.log('rewrite 2')
+
     let square = document.getElementById('s'+cord)
     square.innerHTML = `<div id="f${cord}" class="figure"  onmousedown="dragAndDrop(${cord})" draggable="true">${getChessSymbol(figure)}</div>`
 }
@@ -67,10 +74,7 @@ function dragAndDrop(id) {
     let offsetX;
     let offsetY;
     let start;
-    // figure.ondragend = function (event){
-    //     figure.style.left = event.clientX+'px';
-    //     figure.style.right = event.clientY+'px';
-    // }
+
     figure.addEventListener('dragstart', function (event) {
         isDragging = true
         // console.log(figure.parentNode)
@@ -84,6 +88,7 @@ function dragAndDrop(id) {
         },0)
 
     })
+
     figure.addEventListener('dragend', function (event) {
         console.log('dragend')
         isDragging = false
@@ -94,20 +99,12 @@ function dragAndDrop(id) {
         console.log(map)
     })
 
-    // let squares = document.querySelectorAll('.square')
-    // squares.forEach(function (square) {
-    //     square.addEventListener('drop', function (event) {
-    //         console.log('from '+start+' to '+square.id.substring(1))
-    //         square.append(figure)
-    //     })
-    // })
-
     let squares = document.querySelectorAll('.square')
     squares.forEach(function (square) {
         square.ondrop = function (){
             // console.log('from '+start+' to '+square.id.substring(1))
             moveFigurePHP(start, square.id.substring(1))
-            // moveFigure(start, square.id.substring(1))
+            moveFigure(start, square.id.substring(1))
         }
 
     })
@@ -116,15 +113,18 @@ function dragAndDrop(id) {
 }
 
 function getBoardMap(){
+
     if (isDragging){
         return
     }
+
     console.log('showphp')
     fetch('chess.php?getFigures')
         .then(res => res.text())
         .then(res => {
             showAllFigures(res)
         })
+
 }
 
 function moveFigurePHP(from, to){
@@ -137,7 +137,6 @@ function moveFigurePHP(from, to){
 }
 
 getBoardMap()
-setInterval(getBoardMap, 3000)
+setInterval(getBoardMap, 500)
 showBoard();
-// showAllFigures('rnbqkbnrppppppp11111111111111111111111111111111PPPPPPPPRNBQKBNR')
 
