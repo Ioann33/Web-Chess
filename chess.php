@@ -11,6 +11,7 @@ spl_autoload_register(function($class){
     }
     return false;
 });
+//$storage = new DBStorage('127.0.0.1', '5432', 'test-project', 'postgres', '');
 $storage = new FileStorage('Storage/localStorage.txt');
 //$storage = new SessionStorage('map');
 $board = new Board($storage);
